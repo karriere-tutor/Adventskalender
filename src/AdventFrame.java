@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class AdventFrame extends JFrame {
-    private JButton[] buttons = new JButton[24]; // Array für die 24 Türchen-Buttons
-    private AdventController controller; // Controller für die Logik
+    private final JButton[] buttons = new JButton[24]; // Array für die 24 Türchen-Buttons
+    private final AdventController controller; // Controller für die Logik
 
     public AdventFrame() {
         controller = new AdventController(this);

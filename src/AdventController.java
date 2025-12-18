@@ -2,8 +2,8 @@ import javax.swing.*;
 import java.time.LocalDate;
 
 public class AdventController {
-    private AdventFrame frame; // Referenz auf das Hauptfenster
-    private AdventData data; // Daten für die Türchen-Inhalte
+    private final AdventFrame frame; // Referenz auf das Hauptfenster
+    private final AdventData data; // Daten für die Türchen-Inhalte
 
     public AdventController(AdventFrame frame) {
         this.frame = frame;
