@@ -1,16 +1,20 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class BackgroundPanel extends JPanel {
-    private Image backgroundImage; // Hintergrundbild
+    private final Image backgroundImage;
 
     public BackgroundPanel(String imagePath) {
+        this.backgroundImage = loadImage(imagePath);
+    }
+
+    private Image loadImage(String path) {
         try {
-            // Hintergrundbild laden
-            backgroundImage = new ImageIcon(imagePath).getImage();
+            return new ImageIcon(Objects.requireNonNull(getClass().getResource(path))).getImage();
         } catch (Exception e) {
-            backgroundImage = null;
             System.err.println("Hintergrundbild konnte nicht geladen werden: " + e.getMessage());
+            return null;
         }
     }
 
@@ -18,7 +22,6 @@ public class BackgroundPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (backgroundImage != null) {
-            // Hintergrundbild zeichnen (skaliert auf Panel-Größe)
             g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
         }
     }

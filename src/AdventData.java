@@ -1,29 +1,31 @@
-import javax.swing.ImageIcon;
+import javax.swing.*;
 
 public class AdventData {
-    private final String[] messages = new String[24]; // Nachrichten für jeden Tag
-    private final ImageIcon[] images = new ImageIcon[24]; // Bilder für jeden Tag
+    private final String[] messages = new String[24];
+    private final ImageIcon[] images = new ImageIcon[24];
 
     public AdventData() {
         for (int i = 0; i < messages.length; i++) {
-            // Standardnachricht für jeden Tag
             messages[i] = "Überraschung für den " + (i + 1) + ". Dezember!";
-            try {
-                // Bild für jeden Tag laden (z. B. "images/door1.jpg")
-                images[i] = new ImageIcon("images/door" + (i + 1) + ".jpg");
-            } catch (Exception e) {
-                images[i] = null; // Falls das Bild nicht geladen werden kann
-            }
+            images[i] = null; // Bilder werden erst bei Bedarf geladen
         }
     }
 
-    // Gibt die Nachricht für einen Tag zurück
     public String getMessage(int day) {
         return messages[day - 1];
     }
 
-    // Gibt das Bild für einen Tag zurück
     public ImageIcon getImage(int day) {
+        if (images[day - 1] == null) {
+            String imagePath = "/images/door" + day + ".jpg";
+            java.net.URL imgUrl = getClass().getResource(imagePath);
+            if (imgUrl != null) {
+                images[day - 1] = new ImageIcon(imgUrl);
+            } else {
+                System.err.println("Fehler: Bild für Tag " + day + " nicht gefunden! Pfad: " + imagePath);
+                return null;
+            }
+        }
         return images[day - 1];
     }
 }

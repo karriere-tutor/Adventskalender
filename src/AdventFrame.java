@@ -4,79 +4,70 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class AdventFrame extends JFrame {
-    private final JButton[] buttons = new JButton[24]; // Array für die 24 Türchen-Buttons
-    private final AdventController controller; // Controller für die Logik
+    private static final int COLUMNS = 6;
+    private final JButton[] buttons = new JButton[24];
+    private final AdventController controller;
 
     public AdventFrame() {
         controller = new AdventController(this);
+        initializeUI();
+        controller.loadProgress();
+    }
 
-        // Fenster-Eigenschaften
+
+    private void initializeUI() {
         setTitle("Adventskalender");
         setSize(800, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Zentriert das Fenster
+        setLocationRelativeTo(null);
 
-        // Hintergrundpanel mit Weihnachtsbild
-        BackgroundPanel backgroundPanel = new BackgroundPanel("images/background.jpg");
+        BackgroundPanel backgroundPanel = new BackgroundPanel("/images/background.jpg");
         backgroundPanel.setLayout(new GridBagLayout());
         setContentPane(backgroundPanel);
 
-        // GridBagLayout für flexible Positionierung der Buttons
+        placeButtons(backgroundPanel);
+        controller.updateButtonStates();
+    }
+
+    private void placeButtons(JPanel panel) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.BOTH;
 
-        // Tage 1-24 mischen für zufällige Anordnung
         ArrayList<Integer> days = new ArrayList<>();
         for (int i = 1; i <= 24; i++) days.add(i);
         Collections.shuffle(days);
 
-        // Zufällige Größen für die Türchen (1x1, 2x1, 2x2)
-        int[] gridwidths = {1, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2};
-        int[] gridheights = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2};
+        int[] gridWidths = {1, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2};
+        int[] gridHeights = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2};
 
-        int gridx = 0; // Aktuelle Spalte
-        int gridy = 0; // Aktuelle Zeile
+        int gridX = 0;
+        int gridY = 0;
 
-        // Schleife zum Erstellen der 24 Buttons
         for (int i = 0; i < 24; i++) {
-            int day = days.get(i); // Gemischter Tag (1-24)
+            int day = days.get(i);
             JButton button = new TransparentButton(String.valueOf(day));
+            button.addActionListener(e -> controller.openDoor(day));
 
-            // Button-Stil
-            button.setOpaque(false);
-            button.setContentAreaFilled(false);
-            button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
-            button.setForeground(new Color(220, 14, 7)); // Rot
-            button.setFont(new Font("Arial", Font.BOLD, 32)); // Große, fette Schrift
             buttons[day - 1] = button;
 
-            // Position und Größe des Buttons festlegen
-            gbc.gridx = gridx;
-            gbc.gridy = gridy;
-            gbc.gridwidth = gridwidths[i];
-            gbc.gridheight = gridheights[i];
-            gbc.weightx = gridwidths[i];
-            gbc.weighty = gridheights[i];
+            gbc.gridx = gridX;
+            gbc.gridy = gridY;
+            gbc.gridwidth = gridWidths[i];
+            gbc.gridheight = gridHeights[i];
+            gbc.weightx = gridWidths[i];
+            gbc.weighty = gridHeights[i];
 
-            // ActionListener für das Öffnen der Türchen
-            int currentDay = day;
-            button.addActionListener(e -> controller.openDoor(currentDay));
+            panel.add(button, gbc);
 
-            backgroundPanel.add(button, gbc); // Button zum Panel hinzufügen
-
-            // Nächste Position berechnen
-            gridx += gridwidths[i];
-            if (gridx >= 6) { // Maximal 6 Spalten
-                gridx = 0;
-                gridy += 1;
+            gridX += gridWidths[i];
+            if (gridX >= COLUMNS) {
+                gridX = 0;
+                gridY += 1;
             }
         }
-
-        controller.updateButtonStates(); // Buttons je nach Datum aktivieren/deaktivieren
     }
 
-    // Getter für die Buttons (für den Controller)
     public JButton[] getButtons() {
         return buttons;
     }

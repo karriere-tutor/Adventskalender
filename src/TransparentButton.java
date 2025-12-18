@@ -8,14 +8,14 @@ public class TransparentButton extends JButton {
         setOpaque(false);
         setContentAreaFilled(false);
         setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
-        setForeground(Color.WHITE);
+        setForeground(new Color(220, 14, 7)); // Weihnachtsrot
+        setFont(new Font("Arial", Font.BOLD, 32));
         setUI(new TransparentButtonUI());
     }
 
     private static class TransparentButtonUI extends BasicButtonUI {
         @Override
         public void paint(Graphics g, JComponent c) {
-            // Kein Hintergrund wird gezeichnet
             super.paint(g, c);
         }
     }
