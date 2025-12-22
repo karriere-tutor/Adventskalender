@@ -1,8 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.Objects;
 
 public class BackgroundPanel extends JPanel {
+    private static final String BACKGROUND_IMAGE_PATH = "/images/background.jpg";
     private final Image backgroundImage;
 
     public BackgroundPanel(String imagePath) {
@@ -10,10 +10,11 @@ public class BackgroundPanel extends JPanel {
     }
 
     private Image loadImage(String path) {
-        try {
-            return new ImageIcon(Objects.requireNonNull(getClass().getResource(path))).getImage();
-        } catch (Exception e) {
-            System.err.println("Hintergrundbild konnte nicht geladen werden: " + e.getMessage());
+        java.net.URL imgUrl = getClass().getResource(path);
+        if (imgUrl != null) {
+            return new ImageIcon(imgUrl).getImage();
+        } else {
+            System.err.println("Hintergrundbild nicht gefunden: " + path);
             return null;
         }
     }
@@ -26,3 +27,4 @@ public class BackgroundPanel extends JPanel {
         }
     }
 }
+

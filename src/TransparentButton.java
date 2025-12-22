@@ -8,7 +8,7 @@ public class TransparentButton extends JButton {
         setOpaque(false);
         setContentAreaFilled(false);
         setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
-        setForeground(new Color(220, 14, 7)); // Weihnachtsrot
+        setForeground(new Color(220, 14, 7));
         setFont(new Font("Arial", Font.BOLD, 32));
         setUI(new TransparentButtonUI());
     }

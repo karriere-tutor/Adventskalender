@@ -10,20 +10,43 @@ public class AdventController {
     public AdventController(AdventFrame frame) {
         this.frame = frame;
         this.data = new AdventData();
-        //loadProgress();
     }
 
     public void updateButtonStates() {
-        int today = LocalDate.now().getDayOfMonth();
+        LocalDate today = LocalDate.now();
+        int currentDay = today.getDayOfMonth();
+        int currentMonth = today.getMonthValue(); // 12 = Dezember
+
         for (int i = 0; i < frame.getButtons().length; i++) {
-            frame.getButtons()[i].setEnabled(i + 1 <= today && today <= 24);
+            int day = i + 1;
+            boolean isDecember = currentMonth == 12;
+            boolean isDoorOpen = isDoorOpen(day);
+
+            // Türchen aktivieren, wenn:
+            // 1. Wir uns im Dezember befinden UND der Tag <= 24 ist,
+            //    ODER
+            // 2. Der aktuelle Tag >= dem Türchentag ist (für Januar irrelevant).
+            frame.getButtons()[i].setEnabled(
+                    (isDecember && day <= 24) ||
+                            (currentDay >= day && !isDecember && !isDoorOpen)
+            );
         }
     }
 
     public void openDoor(int day) {
+        if (isDoorOpen(day)) {
+            JOptionPane.showMessageDialog(
+                    frame,
+                    "Dieses Türchen hast du bereits geöffnet!",
+                    "Türchen " + day,
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            return;
+        }
+
         String message = data.getMessage(day);
         ImageIcon image = data.getImage(day);
-        ImageIcon scaledImage = scaleImage(image);
+        ImageIcon scaledImage = scaleImage(image, 400, 400);
 
         JOptionPane.showMessageDialog(
                 frame,
@@ -36,15 +59,36 @@ public class AdventController {
         saveProgress(day);
     }
 
-    private ImageIcon scaleImage(ImageIcon icon) {
+    private boolean isDoorOpen(int day) {
+        File progressFile = new File("progress.txt");
+        if (!progressFile.exists()) {
+            return false;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(progressFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                try {
+                    if (Integer.parseInt(line.trim()) == day) {
+                        return true;
+                    }
+                } catch (NumberFormatException ignored) {}
+            }
+        } catch (IOException e) {
+            System.err.println("Fehler beim Lesen des Fortschritts: " + e.getMessage());
+        }
+        return false;
+    }
+
+    private ImageIcon scaleImage(ImageIcon icon, int maxWidth, int maxHeight) {
         if (icon == null) return null;
 
         Image image = icon.getImage();
         int width = icon.getIconWidth();
         int height = icon.getIconHeight();
 
-        if (width > 400 || height > 400) {
-            double ratio = Math.min((double) 400 / width, (double) 400 / height);
+        if (width > maxWidth || height > maxHeight) {
+            double ratio = Math.min((double) maxWidth / width, (double) maxHeight / height);
             width = (int) (width * ratio);
             height = (int) (height * ratio);
             image = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
@@ -62,7 +106,12 @@ public class AdventController {
     }
 
     void loadProgress() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("progress.txt"))) {
+        File progressFile = new File("progress.txt");
+        if (!progressFile.exists()) {
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(progressFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 try {
@@ -77,3 +126,4 @@ public class AdventController {
         }
     }
 }
+
