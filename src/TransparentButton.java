@@ -3,6 +3,9 @@ import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.*;
 
 public class TransparentButton extends JButton {
+    /**
+     * Erstellt einen transparenten Button mit weißem Rand und roter Schrift.
+     */
     public TransparentButton(String text) {
         super(text);
         setOpaque(false);
@@ -13,6 +16,9 @@ public class TransparentButton extends JButton {
         setUI(new TransparentButtonUI());
     }
 
+    /**
+     * Benutzerdefiniertes UI für den Button (ohne Hintergrund).
+     */
     private static class TransparentButtonUI extends BasicButtonUI {
         @Override
         public void paint(Graphics g, JComponent c) {

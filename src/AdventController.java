@@ -4,14 +4,19 @@ import java.io.*;
 import java.time.LocalDate;
 
 public class AdventController {
-    private final AdventFrame frame;
-    private final AdventData data;
+    private final AdventFrame frame; // Referenz auf das Hauptfenster, um auf die UI-Elemente zuzugreifen.
+    private final AdventData data; // Enthält die Daten (Nachrichten und Bilder) für die Türchen.
 
     public AdventController(AdventFrame frame) {
         this.frame = frame;
         this.data = new AdventData();
     }
 
+    /**
+     Aktualisiert die Zustände der Buttons basierend auf dem aktuellen Datum.
+     Im Dezember bleiben alle Türchen (1-24) aktiv.
+     In anderen Monaten sind nur die Türchen aktiv, deren Tag kleiner oder gleich dem aktuellen Tag ist.
+     */
     public void updateButtonStates() {
         LocalDate today = LocalDate.now();
         int currentDay = today.getDayOfMonth();
@@ -22,10 +27,6 @@ public class AdventController {
             boolean isDecember = currentMonth == 12;
             boolean isDoorOpen = isDoorOpen(day);
 
-            // Türchen aktivieren, wenn:
-            // 1. Wir uns im Dezember befinden UND der Tag <= 24 ist,
-            //    ODER
-            // 2. Der aktuelle Tag >= dem Türchentag ist (für Januar irrelevant).
             frame.getButtons()[i].setEnabled(
                     (isDecember && day <= 24) ||
                             (currentDay >= day && !isDecember && !isDoorOpen)
@@ -33,6 +34,10 @@ public class AdventController {
         }
     }
 
+    /**
+     Öffnet ein Türchen und zeigt die Nachricht und das Bild an.
+     Speichert den Fortschritt in der Datei "progress.txt".
+     */
     public void openDoor(int day) {
         if (isDoorOpen(day)) {
             JOptionPane.showMessageDialog(
@@ -59,6 +64,9 @@ public class AdventController {
         saveProgress(day);
     }
 
+    /**
+     * Prüft, ob ein Türchen bereits geöffnet wurde.
+     */
     private boolean isDoorOpen(int day) {
         File progressFile = new File("progress.txt");
         if (!progressFile.exists()) {
@@ -80,6 +88,9 @@ public class AdventController {
         return false;
     }
 
+    /**
+     * Skaliert ein Bild auf eine maximale Größe.
+     */
     private ImageIcon scaleImage(ImageIcon icon, int maxWidth, int maxHeight) {
         if (icon == null) return null;
 
@@ -97,6 +108,9 @@ public class AdventController {
         return new ImageIcon(image);
     }
 
+    /**
+     * Speichert den Fortschritt in der Datei "progress.txt".
+     */
     private void saveProgress(int day) {
         try (PrintWriter writer = new PrintWriter(new FileWriter("progress.txt", true))) {
             writer.println(day);
@@ -105,6 +119,9 @@ public class AdventController {
         }
     }
 
+    /**
+     * Lädt den Fortschritt aus der Datei "progress.txt".
+     */
     void loadProgress() {
         File progressFile = new File("progress.txt");
         if (!progressFile.exists()) {
