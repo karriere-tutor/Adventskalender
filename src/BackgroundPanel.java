@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class BackgroundPanel extends JPanel {
-    private static final String BACKGROUND_IMAGE_PATH = "/images/background.jpg";
+    static final String BACKGROUND_IMAGE_PATH = "/images/background.jpg";
     private final Image backgroundImage;
 
     public BackgroundPanel(String imagePath) {

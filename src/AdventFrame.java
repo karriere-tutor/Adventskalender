@@ -7,7 +7,7 @@ public class AdventFrame extends JFrame {
     private static final int COLUMNS = 6;
     private static final int WINDOW_WIDTH = 800;
     private static final int WINDOW_HEIGHT = 800;
-    private static final String BACKGROUND_IMAGE_PATH = "/images/background.jpg";
+    //private static final String BACKGROUND_IMAGE_PATH = "/images/background.jpg";
 
     private final JButton[] buttons = new JButton[24];
     private final AdventController controller;
@@ -24,7 +24,7 @@ public class AdventFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        BackgroundPanel backgroundPanel = new BackgroundPanel(BACKGROUND_IMAGE_PATH);
+        BackgroundPanel backgroundPanel = new BackgroundPanel(BackgroundPanel.BACKGROUND_IMAGE_PATH);
         backgroundPanel.setLayout(new GridLayout(4, COLUMNS)); // Einfaches GridLayout
         setContentPane(backgroundPanel);
 
